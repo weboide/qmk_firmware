@@ -16,6 +16,10 @@ extern keymap_config_t keymap_config;
 #define _FN 8
 #define _ADJUST 16
 
+#define M_RNDC 24
+#define M_EML1 25
+#define M_EML2 26
+
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   COLEMAK,
@@ -94,14 +98,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |      |      |      |   ^  |      |  %   |      |   *  |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |      |      |      |      |      |      |      |      | Home | PgDn | PgUp | End  |
  * `-----------------------------------------------------------------------------------'
  */
 [_LOWER] = KEYMAP( \
   KC_TILD,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL, \
   _______, KC_PLUS, KC_MINS, KC_LCBR, KC_LPRN, KC_LBRC, KC_RBRC, KC_RPRN, KC_RCBR, _______, KC_EQL,  KC_BSLS, \
   _______, _______, _______, KC_CIRC, _______, KC_PERC, _______, KC_ASTR, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______ \
+  _______, _______, _______, _______, _______, _______, _______, _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END \
 ),
 
 /* Raise
@@ -126,17 +130,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |      |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 | PSCR |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      | F11  | F12  |      |      |      |      |      |      |      |      |      |
+ * |      | F11  | F12  |      |      | RND  |      |      |      |      |      |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |      |      |      | App  |      |      |      | Mute | MPlay|      |      |      |
+ * |      |      |      | App  |      | MAIL2| MAIL1| Mute | MPlay|      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |  Fn  |      |      |      |      |      |      | Prev | Vol- | Vol+ | Next |
  * `-----------------------------------------------------------------------------------'
  */
 [_FN] =  KEYMAP( \
   _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_PSCR, \
-  _______, KC_F11,  KC_F12,  _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, KC_APP , _______, _______, _______, KC_MUTE, KC_MPLY, _______, _______, _______, \
+  _______, KC_F11,  KC_F12,  _______, _______, M(M_RNDC), _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, KC_APP , _______, M(M_EML2), M(M_EML1), KC_MUTE, KC_MPLY, _______, _______, _______, \
   _______, MO(_FN), _______, _______, _______, _______, _______, _______, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT \
 ),
 
@@ -232,3 +236,49 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   return true;
 }
+
+
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
+{
+  switch(id) {
+    case 0: // this would trigger when you hit a key mapped as M(0)
+      if (record->event.pressed) {
+        return MACRO(D(LGUI), T(R), U(LGUI), W(255), T(N), T(O), T(T), T(E), T(P), T(A), T(D), T(ENTER), END);
+      }
+      break;
+
+    case 1: // this would trigger when you hit a key mapped as M(0)
+      if (record->event.pressed) {
+        return MACRO(D(LGUI), T(R), U(LGUI), W(255), T(C), T(M), T(D), T(ENTER), END);
+      }
+      break;
+
+    case M_EML1:
+      if (record->event.pressed) {
+        SEND_STRING("weboide@codealpha.net");
+      }
+        break;
+
+    case M_EML2:
+      if (record->event.pressed) {
+        SEND_STRING("asoyez@medadvgrp.com");
+      }
+      break;
+
+    case M_RNDC:
+        if (record->event.pressed)
+        {
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+            tap_random_base64();
+        }
+        break;
+  }
+  return MACRO_NONE;
+};
