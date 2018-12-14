@@ -18,7 +18,9 @@
 #   the appropriate keymap folder that will get included automatically
 #
 BACKLIGHT_ENABLE = yes       # Enable keyboard backlight functionality
-RGBLIGHT_ENABLE = yes        # Enable WS2812 RGB underlight. 
+RGBLIGHT_ENABLE = yes        # Enable WS2812 RGB underlight.
+COMMAND_ENABLE = no
+
 
 #ifndef QUANTUM_DIR
 #	include ../../../../Makefile
